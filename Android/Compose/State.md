@@ -1,6 +1,6 @@
 ### remember
 
-remember value through recomposition
+Запоминает значение через рекомпозицию
 
 ### rememberSaveable
 
