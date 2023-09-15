@@ -2,13 +2,52 @@
 
 Запоминает значение через рекомпозицию
 
+``` kotlin
+var text by remember { "" }
+```
+
 ### rememberSaveable
 
-remember value through configuration change etc.
+Запоминает значение через смену конфигурации и тп.
+
+``` kotlin
+var text by rememberSaveable { "" }
+```
 
 ### rememberCoroutineScope
 
-Using the `rememberCoroutineScope` API returns a `CoroutineScope` bound to the point in the Composition where you call it. The scope will be automatically canceled once it leaves the Composition.
+As LaunchedEffect is a composable function, it can only be used inside other composable functions. In order to launch a coroutine outside of a composable, but scoped so that it will be automatically canceled once it leaves the composition, use rememberCoroutineScope. Also use rememberCoroutineScope whenever you need to control the lifecycle of one or more coroutines manually, for example, cancelling an animation when a user event happens.
+
+Using the `rememberCoroutineScope` API returns a `CoroutineScope` bound to the point in the Composition where you call it. Скоуп автоматически закроется как только покинет композицию.
+
+``` kotlin
+@Composable
+fun MoviesScreen(
+snackbarHostState: SnackbarHostState
+) {
+    // Creates a CoroutineScope 
+    // bound to the MoviesScreen's
+    // lifecycle
+    val scope = rememberCoroutineScope()
+
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        }
+    ) { 
+        Button(
+            onClick = {
+                    // Create a new coroutine in the event handler to show a snackbar
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Hello!")
+                    }
+                }
+            ) {
+                Text("Press me")
+        }
+    }
+}
+```
 
 ### rememberUpdatedState
 
